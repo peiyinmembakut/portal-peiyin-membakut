@@ -91,18 +91,16 @@ button:hover{
 
 .header{
     text-align:center;
-    position:relative;
-    min-height:95px;
+    min-height:auto;
 }
 
 .logo{
-    position:absolute;
-    right:0;
-    top:0;
-    width:88px;
-    height:88px;
+    width:100px;
+    height:100px;
     object-fit:contain;
     display:block;
+    margin:0 auto 10px auto;
+    position:static;
 }
 
 .header h2{
@@ -207,113 +205,134 @@ button:hover{
 
 <div class="app">
 
-    <div class="panel">
-        <h2>OPR Generator</h2>
+<div class="panel">
 
-        <label>Logo Sekolah</label>
-        <input type="file" id="logoInput" accept="image/*">
+<h2>OPR Generator</h2>
 
-        <label>Program / Aktiviti</label>
-        <input id="program" value="SESI SELIA BANTU SISC+ MATEMATIK">
+<label>Logo Sekolah</label>
+<input type="file" id="logoInput" accept="image/*">
 
-        <label>Tarikh</label>
-        <input type="date" id="tarikh" value="2026-04-30">
+<label>Program / Aktiviti</label>
+<input id="program" value="SESI SELIA BANTU SISC+ MATEMATIK">
 
-        <label>Masa</label>
-        <input id="masa" value="8:00 PG - 12:00 TGH">
+<label>Tarikh</label>
+<input type="date" id="tarikh" value="2026-04-30">
 
-        <label>Tempat / Anjuran</label>
-        <input id="tempat" value="PANITIA MATEMATIK">
+<label>Masa</label>
+<input id="masa" value="8:00 PG - 12:00 TGH">
 
-        <label>Disediakan oleh</label>
-        <input id="disediakan" value="KOH KIAN TONG">
+<label>Tempat / Anjuran</label>
+<input id="tempat" value="PANITIA MATEMATIK">
 
-        <label>Gambar Program</label>
-        <input type="file" id="gambarInput" accept="image/*" multiple>
+<label>Disediakan oleh</label>
+<input id="disediakan" value="KOH KIAN TONG">
 
-        <button onclick="document.getElementById('gambarInput').click()">
-            Tambah Gambar
-        </button>
+<label>Gambar Program</label>
+<input
+type="file"
+id="gambarInput"
+accept="image/*"
+multiple>
 
-        <button onclick="clearPhotos()" class="clear-btn">
-            Padam Semua Gambar
-        </button>
+<button onclick="document.getElementById('gambarInput').click()">
+Tambah Gambar
+</button>
 
-        <button onclick="generatePreview()">
-            Generate Preview
-        </button>
+<button
+onclick="clearPhotos()"
+class="clear-btn">
+Padam Semua Gambar
+</button>
 
-        <button onclick="exportWord()">
-            Export Word
-        </button>
-    </div>
+<button onclick="generatePreview()">
+Generate Preview
+</button>
 
-    <div class="preview">
-
-        <div id="opr">
-
-            <div class="header">
-
-                <img
-                id="logoPreview"
-                class="logo"
-                alt="Logo Sekolah">
-
-                <h2>SJK(C) PEI YIN, MEMBAKUT</h2>
-                <h3>LAPORAN BERGAMBAR (ONE PAGE REPORT)</h3>
-
-            </div>
-
-            <table class="info-table">
-                <tr>
-                    <td>PROGRAM / AKTIVITI</td>
-                    <td id="vProgram"></td>
-                </tr>
-
-                <tr>
-                    <td>TARIKH</td>
-                    <td id="vTarikh"></td>
-                </tr>
-
-                <tr>
-                    <td>MASA</td>
-                    <td id="vMasa"></td>
-                </tr>
-
-                <tr>
-                    <td>TEMPAT / ANJURAN</td>
-                    <td id="vTempat"></td>
-                </tr>
-            </table>
-
-            <div class="section-title">LAMPIRAN GAMBAR</div>
-
-            <div id="gambarContainer" class="gambar-row"></div>
-
-            <div class="content-row">
-
-                <div class="content-box">
-                    <h4>OBJEKTIF</h4>
-                    <ul id="objektifList"></ul>
-                </div>
-
-                <div class="content-box">
-                    <h4>IMPAK / CATATAN</h4>
-                    <ul id="impakList"></ul>
-                </div>
-
-            </div>
-
-            <div class="footer">
-                <p>Disediakan oleh:</p>
-                <b id="vDisediakan">KOH KIAN TONG</b>
-            </div>
-
-        </div>
-
-    </div>
+<button onclick="exportWord()">
+Export Word
+</button>
 
 </div>
+
+<div class="preview">
+
+<div id="opr">
+
+<div class="header">
+
+<img
+id="logoPreview"
+class="logo"
+alt="Logo Sekolah">
+
+<h2>SJK(C) PEI YIN, MEMBAKUT</h2>
+
+<h3>
+LAPORAN BERGAMBAR
+<br>
+(ONE PAGE REPORT)
+</h3>
+
+</div>
+
+<table class="info-table">
+
+<tr>
+<td>PROGRAM / AKTIVITI</td>
+<td id="vProgram"></td>
+</tr>
+
+<tr>
+<td>TARIKH</td>
+<td id="vTarikh"></td>
+</tr>
+
+<tr>
+<td>MASA</td>
+<td id="vMasa"></td>
+</tr>
+
+<tr>
+<td>TEMPAT / ANJURAN</td>
+<td id="vTempat"></td>
+</tr>
+
+</table>
+
+<div class="section-title">
+LAMPIRAN GAMBAR
+</div>
+
+<div
+id="gambarContainer"
+class="gambar-row">
+</div>
+
+<div class="content-row">
+
+<div class="content-box">
+<h4>OBJEKTIF</h4>
+<ul id="objektifList"></ul>
+</div>
+
+<div class="content-box">
+<h4>IMPAK / CATATAN</h4>
+<ul id="impakList"></ul>
+</div>
+
+</div>
+
+<div class="footer">
+<p>Disediakan oleh:</p>
+<b id="vDisediakan">KOH KIAN TONG</b>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 <script>
 let logoData = null;
 let gambarData = [];
@@ -387,7 +406,7 @@ function autoGenerate(program){
             ]
         };
     }
-
+ 
     if(p.includes("mesyuarat")){
         return {
             objektif:[
@@ -689,6 +708,23 @@ async function exportWord(){
 
     const children = [];
 
+    if(logoData){
+        children.push(
+            new Paragraph({
+                alignment:AlignmentType.CENTER,
+                children:[
+                    new ImageRun({
+                        data:dataUrlToUint8Array(logoData),
+                        transformation:{
+                            width:80,
+                            height:80
+                        }
+                    })
+                ]
+            })
+        );
+    }
+
     children.push(
         new Paragraph({
             alignment:AlignmentType.CENTER,
@@ -704,30 +740,23 @@ async function exportWord(){
             alignment:AlignmentType.CENTER,
             children:[
                 new TextRun({
-                    text:"LAPORAN BERGAMBAR (ONE PAGE REPORT)",
+                    text:"LAPORAN BERGAMBAR",
+                    bold:true,
+                    size:24
+                })
+            ]
+        }),
+        new Paragraph({
+            alignment:AlignmentType.CENTER,
+            children:[
+                new TextRun({
+                    text:"(ONE PAGE REPORT)",
                     bold:true,
                     size:24
                 })
             ]
         })
     );
-
-    if(logoData){
-        children.push(
-            new Paragraph({
-                alignment:AlignmentType.RIGHT,
-                children:[
-                    new ImageRun({
-                        data:dataUrlToUint8Array(logoData),
-                        transformation:{
-                            width:70,
-                            height:70
-                        }
-                    })
-                ]
-            })
-        );
-    }
 
     children.push(
         new Table({
