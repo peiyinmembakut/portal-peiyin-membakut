@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<title>OPR Generator Word</title>
+
+<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f1f5f9;
+}
+
+.app{
+    display:flex;
+    height:100vh;
+}
+
+.panel{
+    width:360px;
+    background:white;
+    padding:20px;
+    overflow:auto;
+    border-right:1px solid #cbd5e1;
+}
+
+.panel h2{
+    margin-top:0;
+}
+
+.panel label{
+    display:block;
+    margin-top:12px;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.panel input{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    border:1px solid #94a3b8;
+    border-radius:4px;
+}
+
+button{
+    width:100%;
+    padding:10px;
+    margin-top:15px;
+    background:#1e40af;
+    color:white;
+    border:none;
+    border-radius:4px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+.clear-btn{
+    background:#dc2626;
+}
+
+.clear-btn:hover{
+    background:#b91c1c;
+}
+
+.preview{
+    flex:1;
+    overflow:auto;
+    padding:25px;
+}
+
+#opr{
+    width:794px;
+    min-height:1123px;
+    background:white;
+    margin:auto;
+    padding:25px;
+    box-shadow:0 0 8px rgba(0,0,0,.25);
+}
+
+.header{
+    text-align:center;
+    position:relative;
+    min-height:95px;
+}
+
+.logo{
+    position:absolute;
+    right:0;
+    top:0;
+    width:88px;
+    height:88px;
+    object-fit:contain;
+    display:block;
+}
+
+.header h2{
+    margin:0;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.header h3{
+    margin:5px 0 0 0;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.info-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+.info-table td{
+    border:1px solid black;
+    padding:6px;
+    font-size:13px;
+    vertical-align:top;
+}
+
+.info-table td:first-child{
+    width:30%;
+    font-weight:bold;
+}
+
+.section-title{
+    margin-top:15px;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.gambar-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:8px;
+}
+
+.gambar-box{
+    text-align:center;
+}
+
+.gambar-box img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    border:1px solid black;
+    background:#f8fafc;
+}
+
+.gambar-box p{
+    margin:5px 0 0 0;
+    font-size:13px;
+}
+
+.content-row{
+    display:flex;
+    gap:18px;
+    margin-top:15px;
+}
+
+.content-box{
+    flex:1;
+    font-size:13px;
+}
+
+.content-box h4{
+    margin:0 0 6px 0;
+    font-size:14px;
+}
+
+.content-box ul{
+    margin-top:5px;
+    padding-left:18px;
+}
+
+.content-box li{
+    margin-bottom:5px;
+    line-height:1.35;
+}
+
+.footer{
+    margin-top:15px;
+    font-size:13px;
+}
+
+.footer b{
+    display:block;
+    margin-top:25px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+    <div class="panel">
+        <h2>OPR Generator</h2>
+
+        <label>Logo Sekolah</label>
+        <input type="file" id="logoInput" accept="image/*">
+
+        <label>Program / Aktiviti</label>
+        <input id="program" value="SESI SELIA BANTU SISC+ MATEMATIK">
+
+        <label>Tarikh</label>
+        <input type="date" id="tarikh" value="2026-04-30">
+
+        <label>Masa</label>
+        <input id="masa" value="8:00 PG - 12:00 TGH">
+
+        <label>Tempat / Anjuran</label>
+        <input id="tempat" value="PANITIA MATEMATIK">
+
+        <label>Disediakan oleh</label>
+        <input id="disediakan" value="KOH KIAN TONG">
+
+        <label>Gambar Program</label>
+        <input type="file" id="gambarInput" accept="image/*" multiple>
+
+        <button onclick="document.getElementById('gambarInput').click()">
+            Tambah Gambar
+        </button>
+
+        <button onclick="clearPhotos()" class="clear-btn">
+            Padam Semua Gambar
+        </button>
+
+        <button onclick="generatePreview()">
+            Generate Preview
+        </button>
+
+        <button onclick="exportWord()">
+            Export Word
+        </button>
+    </div>
+
+    <div class="preview">
+
+        <div id="opr">
+
+            <div class="header">
+
+                <img
+                id="logoPreview"
+                class="logo"
+                alt="Logo Sekolah">
+
+                <h2>SJK(C) PEI YIN, MEMBAKUT</h2>
+                <h3>LAPORAN BERGAMBAR (ONE PAGE REPORT)</h3>
+
+            </div>
+
+            <table class="info-table">
+                <tr>
+                    <td>PROGRAM / AKTIVITI</td>
+                    <td id="vProgram"></td>
+                </tr>
+
+                <tr>
+                    <td>TARIKH</td>
+                    <td id="vTarikh"></td>
+                </tr>
+
+                <tr>
+                    <td>MASA</td>
+                    <td id="vMasa"></td>
+                </tr>
+
+                <tr>
+                    <td>TEMPAT / ANJURAN</td>
+                    <td id="vTempat"></td>
+                </tr>
+            </table>
+
+            <div class="section-title">LAMPIRAN GAMBAR</div>
+
+            <div id="gambarContainer" class="gambar-row"></div>
+
+            <div class="content-row">
+
+                <div class="content-box">
+                    <h4>OBJEKTIF</h4>
+                    <ul id="objektifList"></ul>
+                </div>
+
+                <div class="content-box">
+                    <h4>IMPAK / CATATAN</h4>
+                    <ul id="impakList"></ul>
+                </div>
+
+            </div>
+
+            <div class="footer">
+                <p>Disediakan oleh:</p>
+                <b id="vDisediakan">KOH KIAN TONG</b>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+let logoData = null;
+let gambarData = [];
+
+function getHari(dateStr){
+    const hari = [
+        "AHAD",
+        "ISNIN",
+        "SELASA",
+        "RABU",
+        "KHAMIS",
+        "JUMAAT",
+        "SABTU"
+    ];
+
+    return hari[new Date(dateStr).getDay()];
+}
+
+function formatTarikh(dateStr){
+    const d = new Date(dateStr);
+
+    return String(d.getDate()).padStart(2, "0") + "/" +
+           String(d.getMonth() + 1).padStart(2, "0") + "/" +
+           d.getFullYear();
+}
+
+function autoGenerate(program){
+    const p = program.toLowerCase();
+
+    if(p.includes("sisc")){
+        return {
+            objektif:[
+                "Meningkatkan kualiti pengajaran dan pembelajaran Matematik melalui bimbingan profesional SISC+.",
+                "Membantu guru mengenal pasti kekuatan dan aspek penambahbaikan dalam pelaksanaan PdP.",
+                "Memantapkan strategi pedagogi yang berkesan dan berfokus kepada pembelajaran murid."
+            ],
+            impak:[
+                "Guru memperoleh input dan cadangan penambahbaikan untuk meningkatkan keberkesanan PdP Matematik.",
+                "Guru lebih yakin melaksanakan strategi pengajaran yang berpusatkan murid.",
+                "Perkongsian amalan terbaik membantu meningkatkan kualiti pengajaran dan pembelajaran."
+            ]
+        };
+    }
+
+    if(p.includes("plc")){
+        return {
+            objektif:[
+                "Memupuk budaya kolaboratif dalam kalangan guru.",
+                "Meningkatkan profesionalisme guru melalui perkongsian amalan terbaik.",
+                "Menambah baik kualiti PdP melalui refleksi dan perbincangan profesional."
+            ],
+            impak:[
+                "Guru dapat berkongsi idea dan pengalaman secara berkesan.",
+                "Wujud budaya kerja berpasukan yang positif.",
+                "Kualiti PdP dapat dipertingkatkan."
+            ]
+        };
+    }
+
+    if(p.includes("ladap") || p.includes("kursus") || p.includes("bengkel")){
+        return {
+            objektif:[
+                "Memberi pendedahan dan pengetahuan baharu kepada peserta.",
+                "Meningkatkan kompetensi profesional guru.",
+                "Memperkasa budaya pembelajaran sepanjang hayat."
+            ],
+            impak:[
+                "Peserta memperoleh kemahiran dan pengetahuan baharu.",
+                "Amalan terbaik dapat diaplikasikan dalam tugas harian.",
+                "Kualiti penyampaian perkhidmatan dapat ditingkatkan."
+            ]
+        };
+    }
+
+    if(p.includes("mesyuarat")){
+        return {
+            objektif:[
+                "Menyampaikan maklumat dan ketetapan terkini kepada ahli.",
+                "Membincangkan isu serta tindakan yang perlu dilaksanakan.",
+                "Menyelaraskan pelaksanaan aktiviti dan program sekolah."
+            ],
+            impak:[
+                "Maklumat dapat disampaikan dengan jelas kepada semua ahli.",
+                "Tindakan susulan dapat dirancang dengan lebih sistematik.",
+                "Pengurusan program menjadi lebih teratur dan berkesan."
+            ]
+        };
+    }
+
+    if(p.includes("pertandingan") || p.includes("karnival") || p.includes("syarahan")){
+        return {
+            objektif:[
+                "Mencungkil bakat dan potensi murid.",
+                "Meningkatkan keyakinan diri murid dalam penyertaan aktiviti.",
+                "Menggalakkan penglibatan aktif murid dalam aktiviti kokurikulum."
+            ],
+            impak:[
+                "Murid menunjukkan bakat dan kebolehan masing-masing.",
+                "Keyakinan diri murid dapat ditingkatkan.",
+                "Murid memperoleh pengalaman yang bermakna."
+            ]
+        };
+    }
+
+    if(p.includes("ceramah")){
+        return {
+            objektif:[
+                "Memberi pendedahan dan kesedaran kepada peserta.",
+                "Menyampaikan maklumat berkaitan tajuk yang dibincangkan.",
+                "Membentuk sikap dan nilai positif dalam kalangan peserta."
+            ],
+            impak:[
+                "Peserta memperoleh pengetahuan baharu.",
+                "Tahap kesedaran peserta meningkat.",
+                "Peserta dapat mengaplikasikan ilmu yang diperoleh."
+            ]
+        };
+    }
+
+    return {
+        objektif:[
+            "Melaksanakan program yang dirancang dengan berkesan.",
+            "Meningkatkan penglibatan peserta dalam aktiviti sekolah.",
+            "Menyokong pembangunan sahsiah dan kecemerlangan peserta."
+        ],
+        impak:[
+            "Program dapat dilaksanakan dengan lancar.",
+            "Peserta memperoleh manfaat daripada aktiviti yang dijalankan.",
+            "Objektif program berjaya dicapai."
+        ]
+    };
+}
+
+function readImageFile(file, callback){
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+        callback(e.target.result);
+    };
+
+    reader.readAsDataURL(file);
+}
+
+document.getElementById("logoInput").addEventListener("change", function(){
+    const file = this.files[0];
+
+    if(!file) return;
+
+    readImageFile(file, function(data){
+        logoData = data;
+        document.getElementById("logoPreview").src = data;
+    });
+});
+
+document.getElementById("gambarInput").addEventListener("change", function(){
+    const files = Array.from(this.files);
+
+    files.forEach(function(file){
+        readImageFile(file, function(data){
+            gambarData.push(data);
+            renderPhotos();
+        });
+    });
+
+    this.value = "";
+});
+
+function clearPhotos(){
+    gambarData = [];
+    document.getElementById("gambarContainer").innerHTML = "";
+}
+
+function renderPhotos(){
+    const container = document.getElementById("gambarContainer");
+
+    container.innerHTML = "";
+
+    gambarData.forEach(function(src, index){
+        const box = document.createElement("div");
+        box.className = "gambar-box";
+
+        box.innerHTML = `
+            <img src="${src}" alt="Gambar ${index + 1}">
+            <p>Gambar ${index + 1}</p>
+        `;
+
+        container.appendChild(box);
+    });
+}
+
+function generatePreview(){
+    const program = document.getElementById("program").value;
+    const tarikh = document.getElementById("tarikh").value;
+    const masa = document.getElementById("masa").value;
+    const tempat = document.getElementById("tempat").value;
+    const disediakan = document.getElementById("disediakan").value;
+
+    const data = autoGenerate(program);
+
+    document.getElementById("vProgram").innerText = program;
+    document.getElementById("vTarikh").innerText = formatTarikh(tarikh) + " | " + getHari(tarikh);
+    document.getElementById("vMasa").innerText = masa;
+    document.getElementById("vTempat").innerText = tempat;
+    document.getElementById("vDisediakan").innerText = disediakan;
+
+    document.getElementById("objektifList").innerHTML =
+        data.objektif.map(x => `<li>${x}</li>`).join("");
+
+    document.getElementById("impakList").innerHTML =
+        data.impak.map(x => `<li>${x}</li>`).join("");
+}
+
+function dataUrlToUint8Array(dataUrl){
+    const base64 = dataUrl.split(",")[1];
+    const binary = atob(base64);
+    const len = binary.length;
+    const bytes = new Uint8Array(len);
+
+    for(let i = 0; i < len; i++){
+        bytes[i] = binary.charCodeAt(i);
+    }
+
+    return bytes;
+}
+
+async function exportWord(){
+    generatePreview();
+
+    const {
+        Document,
+        Packer,
+        Paragraph,
+        TextRun,
+        Table,
+        TableRow,
+        TableCell,
+        WidthType,
+        AlignmentType,
+        ImageRun,
+        BorderStyle
+    } = docx;
+
+    const program = document.getElementById("vProgram").innerText;
+    const tarikh = document.getElementById("vTarikh").innerText;
+    const masa = document.getElementById("vMasa").innerText;
+    const tempat = document.getElementById("vTempat").innerText;
+    const disediakan = document.getElementById("vDisediakan").innerText;
+
+    const objektif = Array.from(
+        document.querySelectorAll("#objektifList li")
+    ).map(x => x.innerText);
+
+    const impak = Array.from(
+        document.querySelectorAll("#impakList li")
+    ).map(x => x.innerText);
+
+    const border = {
+        top:{style:BorderStyle.SINGLE,size:1,color:"000000"},
+        bottom:{style:BorderStyle.SINGLE,size:1,color:"000000"},
+        left:{style:BorderStyle.SINGLE,size:1,color:"000000"},
+        right:{style:BorderStyle.SINGLE,size:1,color:"000000"}
+    };
+
+    function normalText(text, bold=false, size=20){
+        return new Paragraph({
+            children:[
+                new TextRun({
+                    text:text,
+                    bold:bold,
+                    size:size
+                })
+            ]
+        });
+    }
+
+    function infoRow(label, value){
+        return new TableRow({
+            children:[
+                new TableCell({
+                    width:{size:30,type:WidthType.PERCENTAGE},
+                    borders:border,
+                    children:[normalText(label, true)]
+                }),
+                new TableCell({
+                    width:{size:70,type:WidthType.PERCENTAGE},
+                    borders:border,
+                    children:[normalText(value)]
+                })
+            ]
+        });
+    }
+
+    function bulletItem(text){
+        return new Paragraph({
+            text:text,
+            bullet:{level:0}
+        });
+    }
+
+    function emptyImageCell(label){
+        return new TableCell({
+            borders:border,
+            children:[
+                new Paragraph({
+                    text:"",
+                    spacing:{after:2000}
+                }),
+                new Paragraph({
+                    text:label,
+                    alignment:AlignmentType.CENTER
+                })
+            ]
+        });
+    }
+
+    function imageCell(imageData, label){
+        if(!imageData){
+            return emptyImageCell(label);
+        }
+
+        return new TableCell({
+            borders:border,
+            children:[
+                new Paragraph({
+                    alignment:AlignmentType.CENTER,
+                    children:[
+                        new ImageRun({
+                            data:dataUrlToUint8Array(imageData),
+                            transformation:{
+                                width:250,
+                                height:170
+                            }
+                        })
+                    ]
+                }),
+                new Paragraph({
+                    text:label,
+                    alignment:AlignmentType.CENTER
+                })
+            ]
+        });
+    }
+
+    function buildImageRows(images){
+        const rows = [];
+
+        if(images.length === 0){
+            rows.push(
+                new TableRow({
+                    children:[
+                        emptyImageCell("Gambar 1"),
+                        emptyImageCell("Gambar 2")
+                    ]
+                })
+            );
+
+            return rows;
+        }
+
+        for(let i = 0; i < images.length; i += 2){
+            const first = imageCell(images[i], "Gambar " + (i + 1));
+            const second = imageCell(images[i + 1], "Gambar " + (i + 2));
+
+            rows.push(
+                new TableRow({
+                    children:[first, second]
+                })
+            );
+        }
+
+        return rows;
+    }
+
+    const children = [];
+
+    children.push(
+        new Paragraph({
+            alignment:AlignmentType.CENTER,
+            children:[
+                new TextRun({
+                    text:"SJK(C) PEI YIN, MEMBAKUT",
+                    bold:true,
+                    size:28
+                })
+            ]
+        }),
+        new Paragraph({
+            alignment:AlignmentType.CENTER,
+            children:[
+                new TextRun({
+                    text:"LAPORAN BERGAMBAR (ONE PAGE REPORT)",
+                    bold:true,
+                    size:24
+                })
+            ]
+        })
+    );
+
+    if(logoData){
+        children.push(
+            new Paragraph({
+                alignment:AlignmentType.RIGHT,
+                children:[
+                    new ImageRun({
+                        data:dataUrlToUint8Array(logoData),
+                        transformation:{
+                            width:70,
+                            height:70
+                        }
+                    })
+                ]
+            })
+        );
+    }
+
+    children.push(
+        new Table({
+            width:{size:100,type:WidthType.PERCENTAGE},
+            rows:[
+                infoRow("PROGRAM / AKTIVITI", program),
+                infoRow("TARIKH", tarikh),
+                infoRow("MASA", masa),
+                infoRow("TEMPAT / ANJURAN", tempat)
+            ]
+        })
+    );
+
+    children.push(
+        new Paragraph({text:""}),
+        new Paragraph({
+            children:[
+                new TextRun({
+                    text:"LAMPIRAN GAMBAR",
+                    bold:true,
+                    size:22
+                })
+            ]
+        })
+    );
+
+    children.push(
+        new Table({
+            width:{size:100,type:WidthType.PERCENTAGE},
+            rows:buildImageRows(gambarData)
+        })
+    );
+
+    children.push(
+        new Paragraph({text:""}),
+        new Table({
+            width:{size:100,type:WidthType.PERCENTAGE},
+            rows:[
+                new TableRow({
+                    children:[
+                        new TableCell({
+                            width:{size:50,type:WidthType.PERCENTAGE},
+                            borders:border,
+                            children:[
+                                new Paragraph({
+                                    children:[
+                                        new TextRun({
+                                            text:"OBJEKTIF",
+                                            bold:true,
+                                            size:22
+                                        })
+                                    ]
+                                }),
+                                ...objektif.map(x => bulletItem(x))
+                            ]
+                        }),
+                        new TableCell({
+                            width:{size:50,type:WidthType.PERCENTAGE},
+                            borders:border,
+                            children:[
+                                new Paragraph({
+                                    children:[
+                                        new TextRun({
+                                            text:"IMPAK / CATATAN",
+                                            bold:true,
+                                            size:22
+                                        })
+                                    ]
+                                }),
+                                ...impak.map(x => bulletItem(x))
+                            ]
+                        })
+                    ]
+                })
+            ]
+        })
+    );
+
+    children.push(
+        new Paragraph({text:""}),
+        normalText("Disediakan oleh:"),
+        new Paragraph({text:""}),
+        new Paragraph({
+            children:[
+                new TextRun({
+                    text:disediakan,
+                    bold:true,
+                    size:22
+                })
+            ]
+        })
+    );
+
+    const doc = new Document({
+        sections:[
+            {
+                properties:{},
+                children:children
+            }
+        ]
+    });
+
+    const blob = await Packer.toBlob(doc);
+
+    const filename =
+        "OPR_" +
+        program.replaceAll(" ", "_").replaceAll("/", "_") +
+        ".docx";
+
+    saveAs(blob, filename);
+}
+
+window.onload = function(){
+    generatePreview();
+};
+</script>
+
+</body>
+</html>
